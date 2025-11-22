@@ -10,10 +10,24 @@ export default function HomePage() {
       
       <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
         <a 
-          href="/login" 
+          href="/signup" 
           style={{
             padding: '12px 24px',
             backgroundColor: '#2563eb',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '6px',
+            fontWeight: 'bold'
+          }}
+        >
+          Student Sign Up
+        </a>
+        
+        <a 
+          href="/login" 
+          style={{
+            padding: '12px 24px',
+            backgroundColor: '#059669',
             color: 'white',
             textDecoration: 'none',
             borderRadius: '6px',
@@ -27,7 +41,7 @@ export default function HomePage() {
           href="/admin/login" 
           style={{
             padding: '12px 24px',
-            backgroundColor: '#059669',
+            backgroundColor: '#7c3aed',
             color: 'white',
             textDecoration: 'none',
             borderRadius: '6px',
@@ -39,9 +53,8 @@ export default function HomePage() {
       </div>
 
       <div style={{ marginTop: '3rem' }}>
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Our Programs</h2>
-        <p>We offer comprehensive courses in:</p>
-        {/* We'll add the actual programs here once you share them */}
+        <h2 style={{ fontSize: '1.5rem', marginBottom: '1rem' }}>Start Your Tech Journey</h2>
+        <p>Choose from our comprehensive courses and begin your learning path today!</p>
       </div>
     </main>
   );
