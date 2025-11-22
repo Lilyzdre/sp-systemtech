@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { supabase } from '@/lib/supabaseClient';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -15,17 +16,34 @@ export default function AdminLoginPage() {
     setLoading(true);
     setError('');
 
-    console.log('Admin logging in with:', { email, password });
-    
-    // Simple check - we'll replace this with real auth later
-    if (email && password) {
-      // Redirect to admin dashboard
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      // Check if user is admin
+      const { data: userData, error: userError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', data.user?.id)
+        .single();
+
+      if (userError || !userData || userData.role !== 'admin') {
+        setError('Admin account not found. Please use student login.');
+        await supabase.auth.signOut();
+        return;
+      }
+
       router.push('/admin/dashboard');
-    } else {
-      setError('Please enter both email and password');
+
+    } catch (error: any) {
+      setError(error.message || 'Login failed');
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   };
 
   return (
@@ -49,9 +67,6 @@ export default function AdminLoginPage() {
           
           <div className="rounded-md shadow-sm -space-y-px">
             <div>
-              <label htmlFor="email" className="sr-only">
-                Admin Email
-              </label>
               <input
                 id="email"
                 name="email"
@@ -65,9 +80,6 @@ export default function AdminLoginPage() {
               />
             </div>
             <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
               <input
                 id="password"
                 name="password"
