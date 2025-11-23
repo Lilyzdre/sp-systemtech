@@ -38,10 +38,16 @@ export default function SignupPage() {
     }
 
     try {
-      // 1. Create auth user
+      // 1. Create auth user WITHOUT email confirmation
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
+        options: {
+          // This skips email confirmation
+          data: {
+            email_confirmed: true
+          }
+        }
       });
 
       if (authError) throw authError;
@@ -62,8 +68,16 @@ export default function SignupPage() {
 
         if (profileError) throw profileError;
 
-        // 3. Redirect to course selection
-        router.push('/courses');
+        // 3. SIGN THE USER IN IMMEDIATELY after creating account
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password
+        });
+
+        if (signInError) throw signInError;
+
+        // 4. Redirect to dashboard
+        router.push('/dashboard');
       }
 
     } catch (error: any) {
